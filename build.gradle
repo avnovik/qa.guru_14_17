@@ -9,9 +9,9 @@ repositories {
     mavenCentral()
 }
 
-def restAssuredVersion = "5.1.1",
-    junitVersion = "5.8.2",
-    slf4jVersion = "1.7.32",
+def restAssuredVersion = "5.2.0", //5.1.1
+    junitVersion = "5.9.0", //5.8.2
+    slf4jVersion = "2.0.3", //1.7.32
     selenide = "6.9.0"
 
 dependencies {
