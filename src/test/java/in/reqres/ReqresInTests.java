@@ -1,20 +1,29 @@
 package in.reqres;
 
+import in.reqres.api.UserData;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
+import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ReqresInTests {
 
+    @BeforeAll
+    static void baseUri() {
+        RestAssured.baseURI = "https://reqres.in";
+    }
+
     @Test
     void getUserSingleTest() {
-        RestAssured.baseURI = "https://reqres.in";
 
         given()
                 .log().uri()
@@ -31,8 +40,6 @@ public class ReqresInTests {
 
     @Test
     void getListUserTest() {
-        RestAssured.baseURI = "https://reqres.in";
-
         given()
                 .log().uri()
                 .log().method()
@@ -47,9 +54,21 @@ public class ReqresInTests {
     }
 
     @Test
-    void postCreateUserTest() {
-        RestAssured.baseURI = "https://reqres.in";
+    void getListUserWithUserDataTest() {
+        List<UserData> users = given()
+                .when()
+                .contentType(JSON)
+                .get("/api/users?page=2")
+                .then()
+                .log().status()
+                .log().body()
+                .extract().body().jsonPath().getList("data", UserData.class);
 
+        Assertions.assertTrue(users.stream().allMatch(n -> n.getAvatar().endsWith(".jpg")));
+    }
+
+    @Test
+    void postCreateUserTest() {
         Map<String, Object> jsonAsMap = new HashMap<>();
         jsonAsMap.put("name", "morpheus");
         jsonAsMap.put("job", "leader");
@@ -58,9 +77,9 @@ public class ReqresInTests {
                 .log().uri()
                 .log().method()
                 .log().body()
-                .contentType("application/json").
-                body(jsonAsMap).
-                when()
+                .body(jsonAsMap)
+                .when()
+                .contentType(JSON)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -69,12 +88,31 @@ public class ReqresInTests {
     }
 
     @Test
-    void postLoginUserTest() {
-        RestAssured.baseURI = "https://reqres.in";
+    void putNewUserTest() {
+        String body = "{ \"name\": \"morpheus\", \"job\": \"zion resident\" }";
+        given()
+                .log().uri()
+                .log().method()
+                .log().body()
+                .body(body)
+                .when()
+                .contentType(JSON)
+                .put("/api/users/2")
+                .then().log().body()
+                .statusCode(200)
+                .body("name", is("morpheus"),
+                        "job", is("zion resident"),
+                        "updatedAt", notNullValue());
+    }
 
-//        given()
-//                .auth().preemptive().basic("eve.holt@reqres.in", "cityslicka")
-//                .when().post("/api/login")
-//                .then().statusCode(200);
+    @Test
+    void deleteUserTest() {
+        given()
+                .log().uri()
+                .log().method()
+                .delete("/api/users/2")
+                .then()
+                .statusCode(204)
+                .log().status();
     }
 }
