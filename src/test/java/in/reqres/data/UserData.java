@@ -1,11 +1,11 @@
 package in.reqres.data;
 
 public class UserData {
-    private Integer id;
-    private String email;
-    private String first_name;
-    private String last_name;
-    private String avatar;
+    private final Integer id;
+    private final String email;
+    private final String first_name;
+    private final String last_name;
+    private final String avatar;
 
     public UserData(int id, String email, String first_name, String last_name, String avatar) {
         this.id = id;

@@ -1,7 +1,5 @@
 plugins {
     id 'java-library'
-}
-plugins {
     id 'ru.vyarus.quality' version '4.8.0'   //Gradle quality plugin
 }
 
