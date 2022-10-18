@@ -1,4 +1,4 @@
-package in.reqres.api;
+package in.reqres.data;
 
 public class UserData {
     private Integer id;

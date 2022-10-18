@@ -1,6 +1,6 @@
 package in.reqres;
 
-import in.reqres.api.UserData;
+import in.reqres.data.UserData;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
