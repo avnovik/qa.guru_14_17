@@ -2,6 +2,7 @@ package in.reqres;
 
 import in.reqres.data.UserData;
 import io.restassured.RestAssured;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -89,12 +90,17 @@ public class ReqresInTests {
 
     @Test
     void putNewUserTest() {
-        String body = "{ \"name\": \"morpheus\", \"job\": \"zion resident\" }";
+        //String body = "{ \"name\": \"morpheus\", \"job\": \"zion resident\" }";
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name", "morpheus");
+        requestBody.put("job", "zion resident");
+
+
         given()
                 .log().uri()
                 .log().method()
                 .log().body()
-                .body(body)
+                .body(requestBody.toString())
                 .when()
                 .contentType(JSON)
                 .put("/api/users/2")
